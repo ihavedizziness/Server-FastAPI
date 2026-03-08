@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    app_name: str = "Speed Test Server"
+    app_name: str = "Stats Server"
     host: str = "0.0.0.0"
     port: int = 8000
     reload: bool = False
