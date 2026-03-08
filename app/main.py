@@ -12,16 +12,65 @@ BASE_DIR = Path(__file__).parent.parent  # project root
 STATIC_DIR = BASE_DIR / "static"
 
 
+TAGS_METADATA = [
+    {
+        "name": "Download",
+        "description": (
+            "Stream random bytes **from the server** to the client. "
+            "The client measures how fast it receives the data."
+        ),
+    },
+    {
+        "name": "Upload",
+        "description": (
+            "Send binary data **to the server**. "
+            "The server measures elapsed time and returns the upload speed in Mbps."
+        ),
+    },
+    {
+        "name": "Internet Speed",
+        "description": (
+            "Run a full **speedtest-cli** test on the server itself. "
+            "Returns the server's own ping, download speed, upload speed, and ISP info. "
+            "Takes approximately 30 seconds."
+        ),
+    },
+    {
+        "name": "Stats",
+        "description": (
+            "Live server resource metrics: CPU, RAM, disk, network I/O, uptime, "
+            "and process count. Refreshes on every request."
+        ),
+    },
+]
+
+
 def create_app() -> FastAPI:
     settings = get_settings()
 
     app = FastAPI(
         title=settings.app_name,
         description=(
-            "Measure download speed from the server, upload speed to the server, "
-            "and the server's own internet connection speed."
+            "## Speed Test Server\n\n"
+            "A self-hosted server for measuring network performance:\n\n"
+            "- **Download** — how fast clients can pull data from this server\n"
+            "- **Upload** — how fast clients can push data to this server\n"
+            "- **Internet Speed** — the server's own connection to the internet\n"
+            "- **Stats** — live CPU, RAM, disk, and network metrics\n\n"
+            "Interactive docs are available here. "
+            "The web UI is served at [`/`](/)."
         ),
         version="1.0.0",
+        openapi_tags=TAGS_METADATA,
+        docs_url="/docs",
+        redoc_url="/redoc",
+        contact={
+            "name": "Speed Test Server",
+            "url": "https://github.com/ihavedizziness/Server-FastAPI",
+        },
+        license_info={
+            "name": "MIT",
+        },
     )
 
     app.add_middleware(
