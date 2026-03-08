@@ -373,21 +373,34 @@
       const buf = new Uint8Array(totalBytes);
       crypto.getRandomValues(buf.subarray(0, Math.min(totalBytes, 65536)));
       for (let i = 65536; i < totalBytes; i++) buf[i] = buf[i % 65536];
-      setProgress('ul-bar',20);
-      setStatus('ul-status','Uploading...');
+      setProgress('ul-bar', 20);
+      setStatus('ul-status', 'Uploading...');
       const start = performance.now();
-      const resp = await fetch('/upload', {
-        method:'POST',
-        headers:{'Content-Type':'application/octet-stream'},
-        body: buf.buffer,
+
+      await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/upload');
+        xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+
+        xhr.upload.onprogress = (e) => {
+          if (!e.lengthComputable) return;
+          const pct = 20 + (e.loaded / e.total) * 78;
+          setProgress('ul-bar', pct);
+          const elapsed = (performance.now() - start) / 1000;
+          const mbps = ((e.loaded * 8) / (elapsed * 1e6)).toFixed(1);
+          setStatus('ul-status', `Uploading… ${(e.loaded/1048576).toFixed(1)} MB — ${mbps} Mbps`);
+        };
+
+        xhr.onload = () => xhr.status < 400 ? resolve() : reject(new Error('Server error ' + xhr.status));
+        xhr.onerror = () => reject(new Error('Network error'));
+        xhr.send(buf.buffer);
       });
-      const clientElapsed = (performance.now()-start)/1000;
-      if (!resp.ok) throw new Error('Server error ' + resp.status);
-      const data = await resp.json();
-      setProgress('ul-bar',100);
-      const clientMbps = ((totalBytes*8)/(clientElapsed*1e6)).toFixed(2);
-      setStatus('ul-status','Done');
-      showResult('ul-result','ul-speed', clientMbps+' Mbps','ul-details',
+
+      const clientElapsed = (performance.now() - start) / 1000;
+      const clientMbps = ((totalBytes * 8) / (clientElapsed * 1e6)).toFixed(2);
+      setProgress('ul-bar', 100);
+      setStatus('ul-status', 'Done');
+      showResult('ul-result', 'ul-speed', clientMbps + ' Mbps', 'ul-details',
         `<span class="result-unit">Mbps (client-measured)</span><br>
          ${sizeMb} MB in ${clientElapsed.toFixed(2)}s`,
         'up');
