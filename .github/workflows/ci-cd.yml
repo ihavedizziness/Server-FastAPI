@@ -77,7 +77,7 @@ jobs:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
-          port: 2222
+          port: ${{ secrets.DEPLOY_PORT }}
           envs: IMAGE_TAG
           script: |
             set -e

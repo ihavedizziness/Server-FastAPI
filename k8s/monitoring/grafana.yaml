@@ -1,13 +1,8 @@
-apiVersion: v1
-kind: Secret
-metadata:
-  name: grafana-secret
-  namespace: monitoring
-type: Opaque
-stringData:
-  admin-password: "admin123"
+# Secret is created manually on the server — never commit passwords to git:
+# kubectl create secret generic grafana-secret \
+#   --from-literal=admin-password=YOUR_STRONG_PASSWORD \
+#   -n monitoring
 
----
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
