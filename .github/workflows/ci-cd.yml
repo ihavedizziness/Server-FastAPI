@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 env:
-  IMAGE: ghcr.io/${{ github.repository }}
+  IMAGE: ghcr.io/ihavedizziness/server-fastapi
 
 jobs:
   # ── CI: lint + type check ────────────────────────────────────────────────
