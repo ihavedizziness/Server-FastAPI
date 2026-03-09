@@ -5,6 +5,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
+from prometheus_fastapi_instrumentator import Instrumentator
+
 from app.config import get_settings
 from app.routers import download, internet, stats, upload
 
@@ -84,6 +86,8 @@ def create_app() -> FastAPI:
     app.include_router(upload.router)
     app.include_router(internet.router)
     app.include_router(stats.router)
+
+    Instrumentator().instrument(app).expose(app, include_in_schema=False)
 
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
