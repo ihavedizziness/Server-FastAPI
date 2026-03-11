@@ -411,8 +411,7 @@
       setProgress('ul-bar', 100);
       setStatus('ul-status', 'Done');
       showResult('ul-result', 'ul-speed', clientMbps + ' Mbps', 'ul-details',
-        `<span class="result-unit">Mbps (client-measured)</span><br>
-         ${sizeMb} MB in ${clientElapsed.toFixed(2)}s`,
+        `<span class="result-unit">Mbps (megabits/sec)</span><br>${(totalBytes/(clientElapsed*1048576)).toFixed(2)} MB/s &nbsp;|&nbsp; ${sizeMb} MB in ${clientElapsed.toFixed(2)}s`,
         'up');
     } catch(e) { setStatus('ul-status','Error: '+e.message,true); }
     finally { setRunning('btn-ul','ul-progress-wrap','ul-bar',false,false); }
