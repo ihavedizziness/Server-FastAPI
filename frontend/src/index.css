@@ -158,3 +158,38 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 
 .gpu-card-wide { grid-column: span 2; }
+
+/* ── Mobile ──────────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  body { padding: 1.25rem 0.75rem; }
+
+  h1 { font-size: 1.5rem; }
+  .subtitle { font-size: 0.85rem; margin-bottom: 1.75rem; }
+
+  .section-title { margin-top: 1.5rem; }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .card { padding: 1.25rem; }
+
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .stat-card { padding: 1rem; }
+
+  .stat-value { font-size: 1.5rem; }
+
+  .gpu-card-wide { grid-column: span 2; }
+
+  .result-speed { font-size: 1.6rem; }
+}
+
+@media (max-width: 400px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .gpu-card-wide { grid-column: span 1; }
+}
