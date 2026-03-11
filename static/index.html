@@ -166,6 +166,8 @@
     .bar-gpu-load { background: #06b6d4; }
     .bar-gpu-mem  { background: #f43f5e; }
 
+    .gpu-card-wide { grid-column: span 2; }
+
   </style>
 </head>
 <body>
@@ -529,7 +531,7 @@
       if (!card) {
         card = document.createElement('div');
         card.id = cardId;
-        card.className = 'stat-card';
+        card.className = 'stat-card gpu-card-wide';
         card.dataset.gpuCard = gpu.index;
         card.innerHTML = `
           <div class="stat-header">
