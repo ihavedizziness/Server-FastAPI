@@ -40,7 +40,7 @@ TAGS_METADATA = [
         "name": "Stats",
         "description": (
             "Live server resource metrics: CPU, RAM, disk, network I/O, uptime, "
-            "and process count. Refreshes on every request."
+            "process count, and GPU utilization/VRAM. Refreshes on every request."
         ),
     },
 ]
@@ -57,7 +57,7 @@ def create_app() -> FastAPI:
             "- **Download** — how fast clients can pull data from this server\n"
             "- **Upload** — how fast clients can push data to this server\n"
             "- **Internet Speed** — the server's own connection to the internet\n"
-            "- **Stats** — live CPU, RAM, disk, and network metrics\n\n"
+            "- **Stats** — live CPU, RAM, disk, network, and GPU metrics\n\n"
             "Interactive docs are available here. "
             "The web UI is served at [`/`](/)."
         ),

@@ -162,6 +162,20 @@
       text-align: right; margin-top: 0.4rem;
       margin-bottom: 2rem;
     }
+
+    .bar-gpu-load { background: #06b6d4; }
+    .bar-gpu-mem  { background: #f43f5e; }
+
+    .gpu-section {
+      width: 100%; max-width: 1000px;
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+
+    .gpu-no-card {
+      background: #1e293b; border: 1px solid #334155;
+      border-radius: 0.75rem; padding: 1.25rem;
+      color: #475569; font-size: 0.85rem;
+    }
   </style>
 </head>
 <body>
@@ -299,6 +313,13 @@
   </div>
 
 </div>
+
+<!-- ── GPU Stats ───────────────────────────────────────────────────────── -->
+<div class="section-title">GPU</div>
+<div class="gpu-section" id="gpu-section">
+  <div class="gpu-no-card" id="gpu-no-card">No GPU detected</div>
+</div>
+
 <div class="stats-ts" id="stats-ts">Connecting...</div>
 
 <script>
@@ -500,7 +521,69 @@
 
       document.getElementById('stats-ts').textContent =
         'Updated: ' + new Date().toLocaleTimeString();
+
+      // GPU
+      renderGPUs(d.gpus || []);
     } catch (_) {}
+  }
+
+  function renderGPUs(gpus) {
+    const section = document.getElementById('gpu-section');
+    const noCard  = document.getElementById('gpu-no-card');
+
+    if (gpus.length === 0) {
+      noCard.style.display = '';
+      // Remove any previously rendered GPU cards
+      section.querySelectorAll('.stat-card').forEach(el => el.remove());
+      return;
+    }
+
+    noCard.style.display = 'none';
+
+    gpus.forEach(gpu => {
+      const cardId  = `gpu-card-${gpu.index}`;
+      let card = document.getElementById(cardId);
+
+      if (!card) {
+        card = document.createElement('div');
+        card.id = cardId;
+        card.className = 'stat-card';
+        card.innerHTML = `
+          <div class="stat-header">
+            <span class="stat-label">GPU ${gpu.index} &mdash; <span class="gpu-name-${gpu.index}"></span></span>
+            <span class="stat-badge badge-ok" id="gpu-load-badge-${gpu.index}">--</span>
+          </div>
+          <div style="display:flex;gap:1rem">
+            <div style="flex:1">
+              <div class="stat-sub" style="margin-bottom:3px">Utilization</div>
+              <div class="stat-value" id="gpu-load-val-${gpu.index}">-- %</div>
+              <div class="stat-bar-wrap" style="margin-top:6px">
+                <div class="stat-bar bar-gpu-load" id="gpu-load-bar-${gpu.index}" style="width:0%"></div>
+              </div>
+            </div>
+            <div style="flex:1">
+              <div class="stat-sub" style="margin-bottom:3px">Memory</div>
+              <div class="stat-value" id="gpu-mem-val-${gpu.index}">-- %</div>
+              <div class="stat-bar-wrap" style="margin-top:6px">
+                <div class="stat-bar bar-gpu-mem" id="gpu-mem-bar-${gpu.index}" style="width:0%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="stat-sub" id="gpu-sub-${gpu.index}"></div>`;
+        section.appendChild(card);
+      }
+
+      const loadBadge = gpu.load_percent < 70 ? 'badge-ok' : gpu.load_percent < 90 ? 'badge-warn' : 'badge-danger';
+      card.querySelector(`.gpu-name-${gpu.index}`).textContent = gpu.name;
+      document.getElementById(`gpu-load-badge-${gpu.index}`).textContent  = gpu.load_percent.toFixed(1) + '%';
+      document.getElementById(`gpu-load-badge-${gpu.index}`).className    = 'stat-badge ' + loadBadge;
+      document.getElementById(`gpu-load-val-${gpu.index}`).textContent    = gpu.load_percent.toFixed(1) + '%';
+      document.getElementById(`gpu-load-bar-${gpu.index}`).style.width    = gpu.load_percent + '%';
+      document.getElementById(`gpu-mem-val-${gpu.index}`).textContent     = gpu.memory_percent.toFixed(1) + '%';
+      document.getElementById(`gpu-mem-bar-${gpu.index}`).style.width     = gpu.memory_percent + '%';
+      document.getElementById(`gpu-sub-${gpu.index}`).textContent         =
+        `${gpu.memory_used_mb.toFixed(0)} MB / ${gpu.memory_total_mb.toFixed(0)} MB VRAM  |  ${gpu.temperature_c} °C`;
+    });
   }
 
   refreshStats();

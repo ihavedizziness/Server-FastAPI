@@ -8,6 +8,16 @@ class NetworkIO(BaseModel):
     mb_recv: float
 
 
+class GPUInfo(BaseModel):
+    index: int
+    name: str
+    load_percent: float = Field(..., description="GPU utilization %")
+    memory_used_mb: float
+    memory_total_mb: float
+    memory_percent: float
+    temperature_c: float = Field(..., description="GPU temperature in Celsius")
+
+
 class ServerStats(BaseModel):
     cpu_percent: float = Field(..., description="CPU usage %")
     cpu_count: int = Field(..., description="Number of logical CPU cores")
@@ -29,3 +39,5 @@ class ServerStats(BaseModel):
 
     uptime_seconds: int
     process_count: int
+
+    gpus: list[GPUInfo] = Field(default_factory=list)

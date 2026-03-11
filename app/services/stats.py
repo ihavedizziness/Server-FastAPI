@@ -2,7 +2,36 @@ import time
 
 import psutil
 
-from app.schemas.stats import NetworkIO, ServerStats
+from app.schemas.stats import GPUInfo, NetworkIO, ServerStats
+
+try:
+    import GPUtil as _gputil
+except Exception:
+    _gputil = None
+
+
+def _get_gpu_info() -> list[GPUInfo]:
+    if _gputil is None:
+        return []
+    try:
+        gpus = _gputil.getGPUs()
+    except Exception:
+        return []
+    result = []
+    for gpu in gpus:
+        mem_total = gpu.memoryTotal or 0
+        mem_used = gpu.memoryUsed or 0
+        mem_pct = round((mem_used / mem_total * 100), 1) if mem_total else 0.0
+        result.append(GPUInfo(
+            index=gpu.id,
+            name=gpu.name,
+            load_percent=round((gpu.load or 0) * 100, 1),
+            memory_used_mb=round(mem_used, 1),
+            memory_total_mb=round(mem_total, 1),
+            memory_percent=mem_pct,
+            temperature_c=round(gpu.temperature or 0, 1),
+        ))
+    return result
 
 
 def get_server_stats() -> ServerStats:
@@ -35,4 +64,5 @@ def get_server_stats() -> ServerStats:
         ),
         uptime_seconds=uptime,
         process_count=len(psutil.pids()),
+        gpus=_get_gpu_info(),
     )
