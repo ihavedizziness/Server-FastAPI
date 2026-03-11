@@ -48,7 +48,7 @@ export default function StatsSection({ stats, updatedAt }) {
             <span className="stat-label">CPU</span>
             <Badge className={badgeClass(cpu_percent)}>{cpu_percent.toFixed(1)}%</Badge>
           </div>
-          <div className="stat-value">{cpu_percent.toFixed(1)}%</div>
+          <div key={Math.floor(cpu_percent)} className="stat-value flash-val">{cpu_percent.toFixed(1)}%</div>
           <StatBar className="bar-cpu" pct={cpu_percent} />
           <div className="stat-sub">
             {cpu_count} cores &nbsp;|&nbsp; load avg: {load_avg_1} / {load_avg_5} / {load_avg_15}
@@ -61,7 +61,7 @@ export default function StatsSection({ stats, updatedAt }) {
             <span className="stat-label">Memory</span>
             <Badge className={badgeClass(ram_percent)}>{ram_percent.toFixed(1)}%</Badge>
           </div>
-          <div className="stat-value">{ram_percent.toFixed(1)}%</div>
+          <div key={Math.floor(ram_percent)} className="stat-value flash-val">{ram_percent.toFixed(1)}%</div>
           <StatBar className="bar-ram" pct={ram_percent} />
           <div className="stat-sub">
             {fmtSize(ram_used_mb)} used of {fmtSize(ram_total_mb)} &nbsp;|&nbsp; {fmtSize(ram_available_mb)} free
@@ -74,7 +74,7 @@ export default function StatsSection({ stats, updatedAt }) {
             <span className="stat-label">Disk</span>
             <Badge className={badgeClass(disk_percent)}>{disk_percent.toFixed(1)}%</Badge>
           </div>
-          <div className="stat-value">{disk_percent.toFixed(1)}%</div>
+          <div key={Math.floor(disk_percent)} className="stat-value flash-val">{disk_percent.toFixed(1)}%</div>
           <StatBar className="bar-disk" pct={disk_percent} />
           <div className="stat-sub">
             {disk_used_gb} GB used of {disk_total_gb} GB &nbsp;|&nbsp; {disk_free_gb} GB free
@@ -118,14 +118,14 @@ export default function StatsSection({ stats, updatedAt }) {
             <div style={{ display: 'flex', gap: '1rem' }}>
               <div style={{ flex: 1 }}>
                 <div className="stat-sub" style={{ marginBottom: '3px' }}>Utilization</div>
-                <div className="stat-value">{gpu.load_percent.toFixed(1)}%</div>
+                <div key={Math.floor(gpu.load_percent)} className="stat-value flash-val">{gpu.load_percent.toFixed(1)}%</div>
                 <div className="stat-bar-wrap" style={{ marginTop: '6px' }}>
                   <div className="stat-bar bar-gpu-load" style={{ width: gpu.load_percent + '%' }} />
                 </div>
               </div>
               <div style={{ flex: 1 }}>
                 <div className="stat-sub" style={{ marginBottom: '3px' }}>VRAM</div>
-                <div className="stat-value">{gpu.memory_percent.toFixed(1)}%</div>
+                <div key={Math.floor(gpu.memory_percent)} className="stat-value flash-val">{gpu.memory_percent.toFixed(1)}%</div>
                 <div className="stat-bar-wrap" style={{ marginTop: '6px' }}>
                   <div className="stat-bar bar-gpu-mem" style={{ width: gpu.memory_percent + '%' }} />
                 </div>
